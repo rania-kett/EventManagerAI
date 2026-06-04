@@ -15,8 +15,8 @@ def test_kanban_board_renders(client, sample_events):
     assert "kanban-board" in html
     assert "Draft Gala" in html
     assert "Confirmed Summit" in html
-    assert "Draft" in html
-    assert "Confirmed" in html
+    assert "Brouillon" in html
+    assert "Confirmé" in html
     assert "data-drop-zone" in html
 
 
@@ -33,7 +33,7 @@ def test_update_status_patch(client, app, sample_events):
     assert response.status_code == 200
     assert data["success"] is True
     assert data["status"] == "in_progress"
-    assert data["status_label"] == "In Progress"
+    assert data["status_label"] == "En cours"
 
     with app.app_context():
         event = db.session.get(Event, draft_id)
