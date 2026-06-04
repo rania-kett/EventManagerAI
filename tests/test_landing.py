@@ -1,21 +1,5 @@
 """test_landing.py — Landing page tests."""
 
-import pytest
-
-
-@pytest.fixture
-def client(app):
-    from app import create_app
-
-    return create_app("testing").test_client()
-
-
-@pytest.fixture
-def app():
-    from app import create_app
-
-    return create_app("testing")
-
 
 def test_landing_sections(client):
     response = client.get("/")

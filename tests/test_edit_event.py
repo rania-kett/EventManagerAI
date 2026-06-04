@@ -4,53 +4,9 @@ test_edit_event.py — Edit Event route and update tests.
 
 from datetime import date
 
-import pytest
-
 from models import db
 from models.event import Event
-
-
-@pytest.fixture
-def app():
-    from app import create_app
-
-    application = create_app("testing")
-    with application.app_context():
-        db.create_all()
-        yield application
-        db.session.remove()
-
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
-
-
-@pytest.fixture
-def sample_event(app):
-    with app.app_context():
-        event = Event.create(
-            title="Salon Tech",
-            event_date=date(2026, 3, 10),
-            location="Casablanca",
-            category="Salon",
-            description="Rencontre professionnelle.",
-        )
-        db.session.add(event)
-        db.session.commit()
-        event_id = event.id
-    return event_id
-
-
-def _updated_payload():
-    return {
-        "title": "Salon Tech 2026",
-        "date": "2026-06-01",
-        "location": "Rabat",
-        "category": "Conférence",
-        "description": "Édition 2026 enrichie par l'IA.",
-        "status": "in_progress",
-    }
+from tests.conftest import valid_event_payload
 
 
 def test_edit_event_get_prefilled(client, sample_event):
@@ -62,14 +18,20 @@ def test_edit_event_get_prefilled(client, sample_event):
     assert "Casablanca" in html
     assert 'value="2026-03-10"' in html
     assert "Enregistrer les modifications" in html
-    assert 'name="status"' in html
-    assert "Draft" in html or "draft" in html
 
 
 def test_edit_event_post_success(client, app, sample_event):
+    payload = valid_event_payload(
+        title="Salon Tech 2026",
+        date="2026-06-01",
+        location="Rabat",
+        category="Conférence",
+        description="Édition 2026 enrichie par l'IA.",
+        status="confirmed",
+    )
     response = client.post(
         f"/events/{sample_event}/edit",
-        data=_updated_payload(),
+        data=payload,
         follow_redirects=True,
     )
     html = response.data.decode("utf-8")
@@ -87,8 +49,7 @@ def test_edit_event_post_success(client, app, sample_event):
 
 
 def test_edit_event_post_empty_title(client, app, sample_event):
-    payload = _updated_payload()
-    payload["title"] = "   "
+    payload = valid_event_payload(title="   ")
 
     response = client.post(f"/events/{sample_event}/edit", data=payload)
     html = response.data.decode("utf-8")

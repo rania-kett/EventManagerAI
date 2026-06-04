@@ -54,6 +54,18 @@ def create_app(config_name: Optional[str] = None) -> Flask:
     app.register_blueprint(landing_bp)
     app.register_blueprint(event_bp)
 
+    @app.context_processor
+    def inject_template_globals():
+        from config import is_gemini_configured
+
+        return {"ai_configured": is_gemini_configured(app)}
+
+    @app.before_request
+    def refresh_env_from_dotenv():
+        """Re-read .env on each request in development (after editing the file)."""
+        if app.debug:
+            apply_env_to_app(app)
+
     @app.route("/")
     def home():
         """Page d'accueil premium EventManager AI."""

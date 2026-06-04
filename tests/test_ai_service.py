@@ -42,18 +42,6 @@ def test_generate_event_description_success(mock_genai):
     mock_genai.GenerativeModel.assert_called_once_with("gemini-2.0-flash")
 
 
-@pytest.fixture
-def app():
-    from app import create_app
-
-    return create_app("testing")
-
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
-
-
 def test_ai_generate_route_requires_title(client):
     response = client.post(
         "/events/ai/generate-description",
@@ -63,11 +51,11 @@ def test_ai_generate_route_requires_title(client):
     assert response.status_code == 400
 
 
-@patch("routes.event_routes.AIService")
-def test_ai_generate_route_success(mock_ai_cls, client):
+@patch("routes.ai_handlers.build_ai_service")
+def test_ai_generate_route_success(mock_build_ai, client):
     mock_instance = MagicMock()
     mock_instance.generate_event_description.return_value = "Description IA générée."
-    mock_ai_cls.from_config.return_value = mock_instance
+    mock_build_ai.return_value = mock_instance
 
     response = client.post(
         "/events/ai/generate-description",

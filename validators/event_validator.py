@@ -2,80 +2,58 @@
 validators/event_validator.py — Validate event form submissions.
 """
 
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
-from factories.event_factory import EventFactory
+from constants.event_form import EVENT_FIELD_LABELS, EVENT_FORM_FIELDS
 from models.event_status import DEFAULT_STATUS, is_valid_status
-
-# Champs obligatoires sur les formulaires création / édition
-EVENT_REQUIRED_FIELDS: Tuple[str, ...] = (
-    "title",
-    "date",
-    "location",
-    "category",
-    "description",
-)
-
-# Alias rétrocompatible
-ADD_EVENT_REQUIRED_FIELDS = EVENT_REQUIRED_FIELDS
-
-_FIELD_LABELS = {
-    "title": "Titre",
-    "date": "Date",
-    "location": "Lieu",
-    "category": "Catégorie",
-    "description": "Description",
-    "status": "Statut",
-}
+from utils.dates import parse_event_date
 
 
 class EventValidator:
     """Server-side validation for event forms."""
 
     @staticmethod
-    def validate_event_form(data: Dict[str, Any]) -> Dict[str, str]:
-        """
-        Validate POST data for creating or updating an event.
-
-        Returns:
-            Dict mapping field name → error message (empty if valid).
-        """
-        errors: Dict[str, str] = {}
-
-        for field in EVENT_REQUIRED_FIELDS:
-            value = (data.get(field) or "").strip()
-            if not value:
-                label = _FIELD_LABELS.get(field, field.title())
-                errors[field] = f"{label} obligatoire."
-
-        if "date" not in errors and (data.get("date") or "").strip():
-            if EventFactory._parse_date(data.get("date")) is None:
-                errors["date"] = "Date invalide."
-
-        status = (data.get("status") or "").strip()
-        if not status:
-            errors["status"] = f"{_FIELD_LABELS['status']} obligatoire."
-        elif not is_valid_status(status):
-            errors["status"] = "Statut invalide."
-
+    def validate(data: Dict[str, Any]) -> Dict[str, str]:
+        """Validate POST data; returns field name → error message."""
+        errors = EventValidator._validate_required_fields(data)
+        errors.update(EventValidator._validate_date_field(data, errors))
+        errors.update(EventValidator._validate_status_field(data))
         return errors
-
-    @staticmethod
-    def validate_add_event(data: Dict[str, Any]) -> Dict[str, str]:
-        """Alias pour la création d'événement."""
-        return EventValidator.validate_event_form(data)
-
-    @staticmethod
-    def validate_edit_event(data: Dict[str, Any]) -> Dict[str, str]:
-        """Alias pour la modification d'événement."""
-        return EventValidator.validate_event_form(data)
 
     @staticmethod
     def normalize_form_data(data: Dict[str, Any]) -> Dict[str, str]:
         """Strip values for re-rendering the form after validation errors."""
         normalized = {
             field: (data.get(field) or "").strip()
-            for field in EVENT_REQUIRED_FIELDS
+            for field in EVENT_FORM_FIELDS
         }
         normalized["status"] = (data.get("status") or "").strip() or DEFAULT_STATUS
         return normalized
+
+    @staticmethod
+    def _validate_required_fields(data: Dict[str, Any]) -> Dict[str, str]:
+        errors: Dict[str, str] = {}
+        for field_name in EVENT_FORM_FIELDS:
+            if not (data.get(field_name) or "").strip():
+                label = EVENT_FIELD_LABELS.get(field_name, field_name.title())
+                errors[field_name] = f"{label} obligatoire."
+        return errors
+
+    @staticmethod
+    def _validate_date_field(
+        data: Dict[str, Any], existing_errors: Dict[str, str]
+    ) -> Dict[str, str]:
+        if "date" in existing_errors or not (data.get("date") or "").strip():
+            return {}
+        if parse_event_date(data.get("date")) is None:
+            return {"date": "Date invalide."}
+        return {}
+
+    @staticmethod
+    def _validate_status_field(data: Dict[str, Any]) -> Dict[str, str]:
+        status = (data.get("status") or "").strip()
+        if not status:
+            return {"status": f"{EVENT_FIELD_LABELS['status']} obligatoire."}
+        if not is_valid_status(status):
+            return {"status": "Statut invalide."}
+        return {}

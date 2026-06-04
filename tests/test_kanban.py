@@ -2,52 +2,8 @@
 test_kanban.py — Kanban board and status update tests.
 """
 
-from datetime import date
-
-import pytest
-
 from models import db
 from models.event import Event
-
-
-@pytest.fixture
-def app():
-    from app import create_app
-
-    application = create_app("testing")
-    with application.app_context():
-        db.create_all()
-        yield application
-        db.session.remove()
-
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
-
-
-@pytest.fixture
-def sample_events(app):
-    with app.app_context():
-        e1 = Event.create(
-            title="Draft Gala",
-            event_date=date(2026, 1, 1),
-            location="Paris",
-            category="Gala",
-            description="Draft event.",
-            status="draft",
-        )
-        e2 = Event.create(
-            title="Confirmed Summit",
-            event_date=date(2026, 2, 1),
-            location="Lyon",
-            category="Summit",
-            description="Confirmed.",
-            status="confirmed",
-        )
-        db.session.add_all([e1, e2])
-        db.session.commit()
-        return e1.id, e2.id
 
 
 def test_kanban_board_renders(client, sample_events):

@@ -2,14 +2,13 @@
   edit_event.html — Modifier un événement (plateforme premium).
 #}
 {% extends "layouts/app.html" %}
-{% from "macros/forms.html" import text_field, status_field %}
 
-{% block title %}Modifier l'événement — EventManager AI{% endblock %}
+{% block title %}{{ page_title }} — EventManager AI{% endblock %}
 
 {% block content %}
 <header class="app-page-header">
     <span class="section-label">Plateforme</span>
-    <h1>Modifier l'événement</h1>
+    <h1>{{ page_title }}</h1>
     <p class="text-muted-premium">Mettez à jour « {{ event.title }} » — statut inclus.</p>
 </header>
 
@@ -20,20 +19,18 @@
     </div>
     {% endif %}
 
-    <form method="post" action="{{ url_for('events.edit_event', event_id=event_id) }}" novalidate id="eventForm">
-        {{ text_field("title", "Titre", form.title, errors, premium=true) }}
-        {{ status_field("status", "Statut", form.status, status_choices, errors, premium=true) }}
-        {{ text_field("location", "Lieu", form.location, errors, premium=true) }}
-        {{ text_field("category", "Catégorie", form.category, errors, premium=true) }}
-        {{ text_field("date", "Date", form.date, errors, type="date", premium=true) }}
-        {% include "partials/ai_description_block.html" %}
+    <form method="post"
+          action="{{ url_for('events.edit_event', event_id=event_id) }}"
+          novalidate
+          id="eventForm">
+        {% include "partials/event_form_fields.html" %}
 
         <p class="text-muted-premium small mb-4">
             <span class="text-danger">*</span> Tous les champs sont obligatoires.
         </p>
 
         <div class="d-flex flex-wrap gap-2">
-            <button type="submit" class="btn btn-premium-gold">Enregistrer les modifications</button>
+            <button type="submit" class="btn btn-premium-gold">{{ submit_label }}</button>
             <a href="{{ url_for('events.index') }}" class="btn btn-app-muted">Annuler</a>
         </div>
     </form>

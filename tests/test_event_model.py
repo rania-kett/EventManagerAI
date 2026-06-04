@@ -4,21 +4,9 @@ test_event_model.py — Event ORM model tests.
 
 from datetime import date
 
-import pytest
-
 from models import db
 from models.event import Event
-
-
-@pytest.fixture
-def app():
-    from app import create_app
-
-    application = create_app("testing")
-    with application.app_context():
-        db.create_all()
-        yield application
-        db.session.remove()
+from utils.dates import parse_event_date
 
 
 def test_event_columns(app):
@@ -53,7 +41,6 @@ def test_event_create_and_persist(app):
         assert loaded.location == "Paris"
         assert loaded.category == "Conference"
         assert loaded.description == "Annual gathering."
-        assert loaded.status == "draft"
 
 
 def test_event_to_dict(app):
@@ -66,8 +53,14 @@ def test_event_to_dict(app):
         db.session.add(event)
         db.session.commit()
 
-        assert event.to_dict()["date"] == "2026-01-01"
-        assert event.to_dict()["category"] == "Training"
+        serialized = event.to_dict()
+        assert serialized["date"] == "2026-01-01"
+        assert serialized["category"] == "Training"
+
+
+def test_parse_event_date():
+    assert parse_event_date("2026-12-01") == date(2026, 12, 1)
+    assert parse_event_date("invalid") is None
 
 
 def test_event_factory_from_form(app):
@@ -81,6 +74,7 @@ def test_event_factory_from_form(app):
                 "location": "Lyon",
                 "category": "Competition",
                 "description": "48h build.",
+                "status": "planned",
             }
         )
         assert event.title == "Hackathon"

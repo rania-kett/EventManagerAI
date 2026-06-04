@@ -1,15 +1,12 @@
 """
 services/ai_service.py — Gemini AI integration for event descriptions.
-
-Isolated from Flask routes. Configure via config.py:
-  GEMINI_API_KEY, GEMINI_MODEL
 """
 
-from typing import Any, Mapping, Optional
+from typing import Any, List, Mapping, Optional
 
 try:
     import google.generativeai as genai
-except ImportError:  # pragma: no cover - optional until pip install
+except ImportError:  # pragma: no cover
     genai = None  # type: ignore
 
 
@@ -30,7 +27,6 @@ class AIService:
 
     @classmethod
     def from_config(cls, config: Mapping[str, Any]) -> "AIService":
-        """Build service from Flask app.config."""
         return cls(
             api_key=config.get("GEMINI_API_KEY"),
             model=config.get("GEMINI_MODEL"),
@@ -46,35 +42,38 @@ class AIService:
         event_date: Optional[Any] = None,
         category: Optional[str] = None,
     ) -> str:
-        """
-        Generate a professional marketing description for an event.
+        cleaned_title = (title or "").strip()
+        self._ensure_ready(cleaned_title)
 
-        Args:
-            title: Event title (required).
-            location: Optional venue or city.
-            event_date: Optional date string or date object.
-            category: Optional event type/category.
+        prompt = self._build_prompt(
+            title=cleaned_title,
+            location=location,
+            event_date=event_date,
+            category=category,
+        )
+        return self._request_description(prompt)
 
-        Returns:
-            Generated description text.
-        """
-        title = (title or "").strip()
+    def _ensure_ready(self, title: str) -> None:
         if not title:
             raise AIServiceError("Event title is required for AI generation.")
-
         if not self.is_configured():
             raise AIServiceNotConfiguredError(
                 "GEMINI_API_KEY is not set. Add it to your .env file."
             )
-
         if genai is None:
             raise AIServiceError(
-                "google-generativeai is not installed. Run: pip install google-generativeai"
+                "google-generativeai is not installed. "
+                "Run: pip install google-generativeai"
             )
 
-        genai.configure(api_key=self._api_key)
-        model = genai.GenerativeModel(self._model)
-
+    @staticmethod
+    def _build_prompt(
+        *,
+        title: str,
+        location: Optional[str],
+        event_date: Optional[Any],
+        category: Optional[str],
+    ) -> str:
         context_lines = [f"Event title: {title}"]
         if category:
             context_lines.append(f"Category: {category.strip()}")
@@ -83,32 +82,39 @@ class AIService:
         if event_date:
             context_lines.append(f"Date: {event_date}")
 
-        prompt = (
+        instructions = (
             "You are a professional event marketing copywriter.\n"
             "Write an elegant, engaging event description in French (2–4 short paragraphs).\n"
             "Tone: premium, professional, suitable for a high-end event agency.\n"
             "Do not use bullet points or markdown headings. Return plain text only.\n\n"
-            + "\n".join(context_lines)
         )
+        return instructions + "\n".join(context_lines)
+
+    def _request_description(self, prompt: str) -> str:
+        genai.configure(api_key=self._api_key)
+        model = genai.GenerativeModel(self._model)
 
         try:
             response = model.generate_content(prompt)
             text = (response.text or "").strip()
         except Exception as exc:
-            err_msg = str(exc)
-            if "429" in err_msg or "quota" in err_msg.lower():
-                raise AIServiceError(
-                    "Quota Gemini dépassé pour ce modèle. "
-                    "Changez GEMINI_MODEL=gemini-2.5-flash dans .env et redémarrez l'application."
-                ) from exc
-            if "404" in err_msg and "not found" in err_msg.lower():
-                raise AIServiceError(
-                    f"Modèle « {self._model} » introuvable. "
-                    "Utilisez GEMINI_MODEL=gemini-2.5-flash dans .env."
-                ) from exc
-            raise AIServiceError(f"Erreur Gemini : {err_msg}") from exc
+            raise self._map_provider_error(exc) from exc
 
         if not text:
             raise AIServiceError("Gemini returned an empty description.")
-
         return text
+
+    def _map_provider_error(self, exc: Exception) -> AIServiceError:
+        error_message = str(exc)
+        if "429" in error_message or "quota" in error_message.lower():
+            return AIServiceError(
+                "Quota Gemini dépassé pour ce modèle. "
+                "Changez GEMINI_MODEL=gemini-2.5-flash dans .env "
+                "et redémarrez l'application."
+            )
+        if "404" in error_message and "not found" in error_message.lower():
+            return AIServiceError(
+                f"Modèle « {self._model} » introuvable. "
+                "Utilisez GEMINI_MODEL=gemini-2.5-flash dans .env."
+            )
+        return AIServiceError(f"Erreur Gemini : {error_message}")
