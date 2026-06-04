@@ -1,0 +1,416 @@
+{% extends "layouts/premium.html" %}
+
+{% block title %}EventManager AI — Gestion d'événements premium{% endblock %}
+
+{% block body %}
+<!-- Navigation -->
+<header class="premium-nav fixed-top" id="top">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid premium-container">
+            <a class="navbar-brand premium-brand" href="#top">EventManager <span class="brand-accent">AI</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#premiumNav"
+                    aria-controls="premiumNav" aria-expanded="false" aria-label="Menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="premiumNav">
+                <ul class="navbar-nav premium-menu">
+                    <li class="nav-item"><a class="nav-link" href="#about">À propos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ia">Intelligence IA</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gallery">Galerie</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#process">Processus</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="d-none d-lg-flex premium-nav-cta">
+                <a href="{{ url_for('events.index') }}" class="btn btn-premium-gold btn-sm">Plateforme</a>
+                <a href="{{ url_for('events.add_event') }}" class="btn btn-premium-outline btn-sm ms-2">Créer un événement</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- 1. Hero -->
+<section class="hero-section" id="hero">
+    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1519167758481-83f29da8c4f3?auto=format&fit=crop&w=1920&q=80');"></div>
+    <div class="hero-overlay"></div>
+    <div class="container-fluid premium-container hero-content reveal">
+        <div class="row align-items-end min-vh-100 pb-5">
+            <div class="col-lg-8 col-xl-7">
+                <p class="hero-eyebrow">Plateforme événementielle · Intelligence artificielle</p>
+                <h1 class="hero-title">
+                    Organisez des événements <em>exceptionnels</em> grâce à l'intelligence artificielle
+                </h1>
+                <p class="hero-subtitle">
+                    Créez, gérez et optimisez vos événements avec une expérience moderne et élégante.
+                </p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('events.add_event') }}" class="btn btn-premium-gold btn-lg">
+                        Créer un événement <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#about" class="btn btn-premium-light btn-lg ms-3">Découvrir la plateforme</a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block">
+                <div class="hero-floating-card reveal delay-2">
+                    <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=600&q=80"
+                         alt="Événement premium" class="img-fluid">
+                    <p class="mt-3 mb-0 small">Expériences sur mesure, pilotées par l'IA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <a href="#about" aria-label="Défiler"><i class="bi bi-chevron-down"></i></a>
+    </div>
+</section>
+
+<!-- 2. À propos -->
+<section class="section-premium section-about" id="about">
+    <div class="container-fluid premium-container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5 reveal">
+                <div class="about-image-stack">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80"
+                         alt="Organisation d'événements" class="about-img-main">
+                    <img src="https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=400&q=80"
+                         alt="Détail événement" class="about-img-accent">
+                </div>
+            </div>
+            <div class="col-lg-7 reveal delay-1">
+                <span class="section-label">À propos</span>
+                <h2 class="section-title">EventManager <span class="text-gold">AI</span></h2>
+                <p class="section-lead">
+                    Une plateforme conçue pour les organisateurs exigeants qui souhaitent allier
+                    excellence opérationnelle et créativité augmentée par l'intelligence artificielle.
+                </p>
+                <p class="text-muted-premium">
+                    EventManager AI centralise l'ensemble du cycle de vie de vos événements — de la conception
+                    à la publication — dans une interface raffinée, pensée comme un outil professionnel
+                    et non comme un simple back-office.
+                </p>
+                <ul class="about-pillars">
+                    <li><i class="bi bi-calendar-check"></i> Planifier</li>
+                    <li><i class="bi bi-diagram-3"></i> Organiser</li>
+                    <li><i class="bi bi-sliders"></i> Gérer</li>
+                    <li><i class="bi bi-stars"></i> Optimiser</li>
+                </ul>
+                <p class="about-tagline">Le tout, propulsé par l'intelligence artificielle.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Services -->
+<section class="section-premium section-dark" id="services">
+    <div class="container-fluid premium-container text-center">
+        <span class="section-label section-label-light reveal">Services</span>
+        <h2 class="section-title text-white reveal">Une expérience complète</h2>
+        <p class="section-lead text-white-50 mx-auto reveal delay-1" style="max-width: 640px;">
+            Quatre piliers pour transformer votre façon de concevoir et délivrer des événements mémorables.
+        </p>
+        <div class="row g-4 mt-4">
+            <div class="col-md-6 col-xl-3 reveal">
+                <article class="service-card">
+                    <span class="service-number">01</span>
+                    <i class="bi bi-plus-circle service-icon"></i>
+                    <h3>Création d'événements</h3>
+                    <p>Structurez vos projets avec des formulaires élégants et une saisie fluide.</p>
+                </article>
+            </div>
+            <div class="col-md-6 col-xl-3 reveal delay-1">
+                <article class="service-card">
+                    <span class="service-number">02</span>
+                    <i class="bi bi-people service-icon"></i>
+                    <h3>Gestion des participants</h3>
+                    <p>Centralisez inscriptions, listes et communications en un seul espace.</p>
+                </article>
+            </div>
+            <div class="col-md-6 col-xl-3 reveal delay-2">
+                <article class="service-card">
+                    <span class="service-number">03</span>
+                    <i class="bi bi-lightning-charge service-icon"></i>
+                    <h3>Planification intelligente</h3>
+                    <p>Anticipez les étapes clés grâce à des recommandations assistées par IA.</p>
+                </article>
+            </div>
+            <div class="col-md-6 col-xl-3 reveal delay-3">
+                <article class="service-card">
+                    <span class="service-number">04</span>
+                    <i class="bi bi-magic service-icon"></i>
+                    <h3>Génération IA de descriptions</h3>
+                    <p>Produisez des textes professionnels en quelques secondes, prêts à publier.</p>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. IA -->
+<section class="section-premium section-ia" id="ia">
+    <div class="container-fluid premium-container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5 reveal">
+                <span class="section-label">Intelligence artificielle</span>
+                <h2 class="section-title">Des descriptions <em>irréprochables</em>, instantanément</h2>
+                <p class="text-muted-premium">
+                    Saisissez le titre de votre événement : l'IA rédige une description élégante,
+                    structurée et prête pour vos supports de communication.
+                </p>
+            </div>
+            <div class="col-lg-7 reveal delay-1">
+                <div class="ia-demo">
+                    <div class="ia-panel ia-input">
+                        <span class="ia-label"><i class="bi bi-pencil"></i> Entrée</span>
+                        <p class="ia-value">Conférence IA Maroc 2026</p>
+                    </div>
+                    <div class="ia-arrow"><i class="bi bi-stars"></i></div>
+                    <div class="ia-panel ia-output">
+                        <span class="ia-label"><i class="bi bi-stars"></i> Sortie générée</span>
+                        <p class="ia-output-text">
+                            Plongez au cœur de l'innovation lors de la <strong>Conférence IA Maroc 2026</strong>,
+                            un rendez-vous d'exception réunissant experts, décideurs et visionnaires.
+                            Au programme : keynotes inspirantes, ateliers pratiques et networking premium
+                            dans un cadre pensé pour favoriser les échanges de haut niveau.
+                            Une expérience immersive pour anticiper les transformations de demain.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Galerie -->
+<section class="section-premium" id="gallery">
+    <div class="container-fluid premium-container">
+        <div class="text-center mb-5 reveal">
+            <span class="section-label">Galerie</span>
+            <h2 class="section-title">Événements d'exception</h2>
+        </div>
+        <div class="gallery-grid reveal">
+            <figure class="gallery-item gallery-tall">
+                <img src="https://images.unsplash.com/photo-1478146896981-b80fe463b330?auto=format&fit=crop&w=600&q=80" alt="Gala">
+                <figcaption>Gala corporate</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=600&q=80" alt="Conférence">
+                <figcaption>Conférence</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=600&q=80" alt="Lancement">
+                <figcaption>Lancement produit</figcaption>
+            </figure>
+            <figure class="gallery-item gallery-wide">
+                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80" alt="Festival">
+                <figcaption>Festival premium</figcaption>
+            </figure>
+            <figure class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1519167758481-83f29da8c4f3?auto=format&fit=crop&w=600&q=80" alt="Dîner">
+                <figcaption>Dîner de gala</figcaption>
+            </figure>
+            <figure class="gallery-item gallery-tall">
+                <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&q=80" alt="Concert">
+                <figcaption>Soirée exclusive</figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Processus -->
+<section class="section-premium section-dark" id="process">
+    <div class="container-fluid premium-container">
+        <div class="text-center mb-5 reveal">
+            <span class="section-label section-label-light">Processus</span>
+            <h2 class="section-title text-white">Quatre étapes, une excellence constante</h2>
+        </div>
+        <div class="process-timeline reveal">
+            <div class="process-step">
+                <span class="process-num">01</span>
+                <h3>Créer l'événement</h3>
+                <p>Définissez titre, date, lieu et catégorie dans une interface soignée.</p>
+            </div>
+            <div class="process-step">
+                <span class="process-num">02</span>
+                <h3>Générer une description IA</h3>
+                <p>Laissez l'intelligence artificielle rédiger un contenu professionnel.</p>
+            </div>
+            <div class="process-step">
+                <span class="process-num">03</span>
+                <h3>Modifier et personnaliser</h3>
+                <p>Ajustez chaque détail jusqu'à obtenir le ton parfait.</p>
+            </div>
+            <div class="process-step">
+                <span class="process-num">04</span>
+                <h3>Publier l'événement</h3>
+                <p>Diffusez votre événement avec une présentation digne de votre marque.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. Statistiques -->
+<section class="section-premium section-stats" id="stats">
+    <div class="container-fluid premium-container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-lg-3 reveal">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="1280">0</span>
+                    <span class="stat-label">Événements créés</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 reveal delay-1">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="540">0</span>
+                    <span class="stat-label">Utilisateurs actifs</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 reveal delay-2">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="3200">0</span>
+                    <span class="stat-label">Descriptions générées</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 reveal delay-3">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="98" data-suffix="%">0</span>
+                    <span class="stat-label">Satisfaction client</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. Témoignages -->
+<section class="section-premium" id="testimonials">
+    <div class="container-fluid premium-container">
+        <div class="text-center mb-5 reveal">
+            <span class="section-label">Témoignages</span>
+            <h2 class="section-title">Ils nous font confiance</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 reveal">
+                <blockquote class="testimonial-card">
+                    <p>« EventManager AI a transformé notre façon de lancer des événements corporate. L'IA nous fait gagner des heures de rédaction. »</p>
+                    <footer>
+                        <strong>Sarah Benali</strong>
+                        <span>Directrice événementiel, Casablanca</span>
+                    </footer>
+                </blockquote>
+            </div>
+            <div class="col-lg-4 reveal delay-1">
+                <blockquote class="testimonial-card">
+                    <p>« Une interface digne d'une agence premium. Nos clients remarquent immédiatement la différence. »</p>
+                    <footer>
+                        <strong>Youssef Amrani</strong>
+                        <span>Fondateur, Agence Lumière</span>
+                    </footer>
+                </blockquote>
+            </div>
+            <div class="col-lg-4 reveal delay-2">
+                <blockquote class="testimonial-card">
+                    <p>« La génération de descriptions est bluffante. Le ton est professionnel, prêt à publier sans retouches majeures. »</p>
+                    <footer>
+                        <strong>Inès Marquet</strong>
+                        <span>Chef de projet, Rabat</span>
+                    </footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 9. Contact -->
+<section class="section-premium section-contact" id="contact">
+    <div class="container-fluid premium-container">
+        <div class="row g-5">
+            <div class="col-lg-5 reveal">
+                <span class="section-label">Contact</span>
+                <h2 class="section-title">Échangeons sur votre prochain événement</h2>
+                <p class="text-muted-premium">
+                    Une question, une démonstration ou un partenariat ? Notre équipe vous répond sous 48 h.
+                </p>
+                <ul class="contact-info">
+                    <li><i class="bi bi-envelope"></i> contact@eventmanager.ai</li>
+                    <li><i class="bi bi-geo-alt"></i> Maroc · Remote worldwide</li>
+                </ul>
+            </div>
+            <div class="col-lg-7 reveal delay-1">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-premium alert-{{ category }} mb-4" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <form class="contact-form" method="post" action="{{ url_for('landing.contact') }}">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Nom complet</label>
+                            <input type="text" class="form-control premium-input" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control premium-input" id="email" name="email" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control premium-input" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-premium-gold btn-lg">Envoyer le message</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 10. Footer -->
+<footer class="premium-footer">
+    <div class="container-fluid premium-container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <a href="#top" class="premium-brand footer-brand">EventManager <span class="brand-accent">AI</span></a>
+                <p class="footer-text">
+                    Plateforme SaaS premium de gestion d'événements augmentée par l'intelligence artificielle.
+                </p>
+                <div class="footer-social">
+                    <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h4>Plateforme</h4>
+                <ul>
+                    <li><a href="{{ url_for('events.index') }}">Mes événements</a></li>
+                    <li><a href="{{ url_for('events.add_event') }}">Créer un événement</a></li>
+                    <li><a href="#ia">Génération IA</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h4>Découvrir</h4>
+                <ul>
+                    <li><a href="#about">À propos</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#process">Processus</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h4>Newsletter</h4>
+                <p class="footer-text small">Recevez nos actualités produit et conseils événementiels.</p>
+                <form class="newsletter-form" onsubmit="return false;">
+                    <input type="email" class="form-control premium-input" placeholder="Votre e-mail" aria-label="E-mail newsletter">
+                    <button type="submit" class="btn btn-premium-outline btn-sm mt-2">S'inscrire</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {{ 2026 }} EventManager AI. Tous droits réservés.</p>
+            <p class="footer-credit">Conçu pour l'excellence événementielle.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}

@@ -58,5 +58,8 @@ class EventFactory:
         if isinstance(value, datetime):
             return value.date()
         if isinstance(value, str):
-            return date.fromisoformat(value[:10])
+            try:
+                return date.fromisoformat(value[:10])
+            except ValueError:
+                return None
         return None

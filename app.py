@@ -15,12 +15,14 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from flask import Flask, redirect, url_for
+from flask import Flask, render_template
 
 from config import config_by_name
 from models import db
+from models.db_schema import ensure_database_schema
 from models.event import Event  # noqa: F401 — register model with metadata
 from routes.event_routes import event_bp
+from routes.landing_routes import landing_bp
 
 
 def create_app(config_name: Optional[str] = None) -> Flask:
@@ -46,16 +48,18 @@ def create_app(config_name: Optional[str] = None) -> Flask:
     db.init_app(app)
 
     with app.app_context():
-        db.create_all()
+        ensure_database_schema()
 
+    app.register_blueprint(landing_bp)
     app.register_blueprint(event_bp)
 
     @app.route("/")
     def home():
-        """Root URL redirects to event list."""
-        return redirect(url_for("events.index"))
+        """Page d'accueil premium EventManager AI."""
+        return render_template("landing.html")
 
     return app
+
 
 
 # Module-level app for `flask --app app run` and python app.py

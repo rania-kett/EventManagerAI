@@ -23,16 +23,18 @@ def client(app):
 
 
 def test_create_app(client):
-    """Home redirects to events list."""
+    """Landing page renders at root."""
     response = client.get("/")
-    assert response.status_code in (302, 200)
+    assert response.status_code == 200
+    assert b"EventManager" in response.data
+    assert b"intelligence artificielle" in response.data
 
 
 def test_events_index(client):
     """Event list page renders."""
     response = client.get("/events/")
     assert response.status_code == 200
-    assert b"Events" in response.data
+    assert "Mes événements" in response.data.decode("utf-8")
 
 
 def test_db_tables_created(app):

@@ -35,6 +35,8 @@ class DevelopmentConfig(Config):
     """Local development defaults."""
 
     DEBUG = True
+    # Recreate tables when models change (SQLite has no auto-migrate in this project)
+    RESET_DB_ON_SCHEMA_DRIFT = True
 
 
 class ProductionConfig(Config):
