@@ -67,3 +67,16 @@ class EventService:
         EventFactory.apply_update(event, data)
         db.session.commit()
         return event, {}, form_data
+
+    @staticmethod
+    def delete(event: Event) -> str:
+        """
+        Remove an event from the database.
+
+        Returns:
+            The event title (for flash messages).
+        """
+        title = event.title
+        db.session.delete(event)
+        db.session.commit()
+        return title

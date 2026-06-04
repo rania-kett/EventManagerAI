@@ -1,15 +1,20 @@
 /**
- * main.js — Client-side behavior for EventManagerAI.
- *
- * Future: AJAX call to /events/<id>/generate-description,
- * form validation, confirm delete dialogs.
+ * main.js — Client-side behavior for EventManagerAI platform pages.
  */
 
 (function () {
     "use strict";
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Placeholder — enable when AI and CRUD endpoints are implemented
-        console.debug("EventManagerAI skeleton loaded");
+        document.querySelectorAll(".delete-event-form").forEach(function (form) {
+            form.addEventListener("submit", function (e) {
+                var title = form.getAttribute("data-event-title") || "cet événement";
+                var message =
+                    "Supprimer « " + title + " » ?\n\nCette action est irréversible.";
+                if (!window.confirm(message)) {
+                    e.preventDefault();
+                }
+            });
+        });
     });
 })();
