@@ -2,6 +2,7 @@
   edit_event.html — Modifier un événement (plateforme premium).
 #}
 {% extends "layouts/app.html" %}
+{% from "macros/forms.html" import text_field %}
 
 {% block title %}Modifier l'événement — EventManager AI{% endblock %}
 
@@ -9,38 +10,30 @@
 <header class="app-page-header">
     <span class="section-label">Plateforme</span>
     <h1>Modifier l'événement</h1>
-    <p class="text-muted-premium">Événement #{{ event_id }} — édition complète à venir.</p>
+    <p class="text-muted-premium">Mettez à jour les informations de « {{ event.title }} ».</p>
 </header>
 
 <div class="app-form-panel">
-    <form method="post" action="{{ url_for('events.edit_event', event_id=event_id) }}">
-        <div class="mb-3">
-            <label for="title" class="form-label">Titre</label>
-            <input type="text" class="form-control" id="title" name="title"
-                   value="{{ event.title if event else '' }}" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="location" class="form-label">Lieu</label>
-            <input type="text" class="form-control" id="location" name="location"
-                   value="{{ event.location if event else '' }}" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="category" class="form-label">Catégorie</label>
-            <input type="text" class="form-control" id="category" name="category"
-                   value="{{ event.category if event else '' }}" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="date" class="form-label">Date</label>
-            <input type="date" class="form-control" id="date" name="date"
-                   value="{{ event.date.isoformat() if event and event.date else '' }}" disabled>
-        </div>
-        <div class="mb-4">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="5" disabled>{{ event.description if event else '' }}</textarea>
-        </div>
+    {% if errors %}
+    <div class="alert alert-premium alert-danger mb-4" role="alert">
+        Veuillez corriger les champs indiqués ci-dessous.
+    </div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('events.edit_event', event_id=event_id) }}" novalidate>
+        {{ text_field("title", "Titre", form.title, errors, premium=true) }}
+        {{ text_field("location", "Lieu", form.location, errors, premium=true) }}
+        {{ text_field("category", "Catégorie", form.category, errors, premium=true) }}
+        {{ text_field("date", "Date", form.date, errors, type="date", premium=true) }}
+        {{ text_field("description", "Description", form.description, errors, rows=5, premium=true) }}
+
+        <p class="text-muted-premium small mb-4">
+            <span class="text-danger">*</span> Tous les champs sont obligatoires.
+        </p>
+
         <div class="d-flex flex-wrap gap-2">
-            <button type="submit" class="btn btn-premium-gold" disabled>Bientôt disponible</button>
-            <a href="{{ url_for('events.index') }}" class="btn btn-app-muted">Retour</a>
+            <button type="submit" class="btn btn-premium-gold">Enregistrer les modifications</button>
+            <a href="{{ url_for('events.index') }}" class="btn btn-app-muted">Annuler</a>
         </div>
     </form>
 </div>
