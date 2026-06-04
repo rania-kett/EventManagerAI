@@ -6,6 +6,7 @@ Blueprint prefix: /events (registered in app.py).
 
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
+from config import is_gemini_configured
 from models.event import Event
 from models.event_status import DEFAULT_STATUS, EVENT_STATUSES
 from services.event_service import EventService
@@ -122,7 +123,56 @@ def delete_event(event_id: int):
     return redirect(url_for("events.index"))
 
 
+@event_bp.route("/ai/generate-description", methods=["POST"])
+def ai_generate_description():
+    """
+    Generate event description via Gemini (add/edit forms).
+
+    JSON body: title (required), location, date, category (optional).
+    """
+    payload = request.get_json(silent=True) or request.form
+    title = (payload.get("title") or "").strip()
+
+    if not title:
+        return jsonify({"success": False, "message": "Le titre est obligatoire."}), 400
+
+    ai = AIService.from_config(current_app.config)
+
+    try:
+        description = ai.generate_event_description(
+            title=title,
+            location=(payload.get("location") or "").strip() or None,
+            event_date=(payload.get("date") or "").strip() or None,
+            category=(payload.get("category") or "").strip() or None,
+        )
+    except AIServiceNotConfiguredError as exc:
+        return jsonify({"success": False, "message": str(exc)}), 503
+    except AIServiceError as exc:
+        return jsonify({"success": False, "message": str(exc)}), 502
+
+    return jsonify({"success": True, "description": description})
+
+
 @event_bp.route("/<int:event_id>/generate-description", methods=["POST"])
 def generate_description(event_id: int):
-    """Call Gemini to generate/update description — implementation pending."""
-    return "", 501  # Not Implemented
+    """Generate description for an existing event and save to database."""
+    event = Event.query.get_or_404(event_id)
+    ai = AIService.from_config(current_app.config)
+
+    try:
+        description = ai.generate_event_description(
+            title=event.title,
+            location=event.location,
+            event_date=event.date.isoformat() if event.date else None,
+            category=event.category,
+        )
+        event.description = description
+        from models import db
+
+        db.session.commit()
+    except AIServiceNotConfiguredError as exc:
+        return jsonify({"success": False, "message": str(exc)}), 503
+    except AIServiceError as exc:
+        return jsonify({"success": False, "message": str(exc)}), 502
+
+    return jsonify({"success": True, "description": description})
