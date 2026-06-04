@@ -4,6 +4,9 @@
 (function () {
     "use strict";
 
+    const COUNTER_ANIMATION_MS = 2000;
+    const ANCHOR_SCROLL_OFFSET_PX = 90;
+
     const nav = document.querySelector(".premium-nav");
     const reveals = document.querySelectorAll(".reveal");
     const counters = document.querySelectorAll(".stat-value[data-count]");
@@ -36,7 +39,7 @@
     function animateCounter(el) {
         const target = parseInt(el.getAttribute("data-count"), 10);
         const suffix = el.getAttribute("data-suffix") || "";
-        const duration = 2000;
+        const duration = COUNTER_ANIMATION_MS;
         const start = performance.now();
 
         function format(n) {
@@ -82,7 +85,7 @@
             const target = document.querySelector(id);
             if (!target) return;
             e.preventDefault();
-            const offset = 90;
+            const offset = ANCHOR_SCROLL_OFFSET_PX;
             const top =
                 target.getBoundingClientRect().top + window.scrollY - offset;
             window.scrollTo({ top, behavior: "smooth" });

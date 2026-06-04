@@ -5,6 +5,8 @@ dates.py — Parse event dates from forms, APIs, and ORM values.
 from datetime import date, datetime
 from typing import Any, Optional
 
+ISO_DATE_PREFIX_LEN = 10
+
 
 def parse_event_date(value: Optional[Any]) -> Optional[date]:
     """Parse ISO date (YYYY-MM-DD) or date/datetime objects."""
@@ -16,7 +18,7 @@ def parse_event_date(value: Optional[Any]) -> Optional[date]:
         return value.date()
     if isinstance(value, str):
         try:
-            return date.fromisoformat(value[:10])
+            return date.fromisoformat(value[:ISO_DATE_PREFIX_LEN])
         except ValueError:
             return None
     return None
