@@ -1,0 +1,41 @@
+{#
+  add_event.html — Create new event form.
+
+  POST target: events.add_event
+  Fields: title, date, location, category, description
+  Future: button to generate description via Gemini before save.
+#}
+{% extends "base.html" %}
+
+{% block title %}Add Event — EventManagerAI{% endblock %}
+
+{% block content %}
+<h1 class="h2 mb-4">Add Event</h1>
+
+<form method="post" action="{{ url_for('events.add_event') }}">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required disabled
+               placeholder="Form submission not implemented yet">
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="4" disabled></textarea>
+        <div class="form-text">Generate with AI — coming soon.</div>
+    </div>
+    <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" name="location" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <input type="text" class="form-control" id="category" name="category" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" name="date" disabled>
+    </div>
+    <button type="submit" class="btn btn-primary" disabled>Save Event</button>
+    <a href="{{ url_for('events.index') }}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+{% endblock %}

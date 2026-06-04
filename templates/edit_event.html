@@ -1,0 +1,46 @@
+{#
+  edit_event.html — Update existing event form.
+
+  Expects: event (ORM) or event_id during skeleton phase.
+  POST target: events.edit_event
+#}
+{% extends "base.html" %}
+
+{% block title %}Edit Event — EventManagerAI{% endblock %}
+
+{% block content %}
+<h1 class="h2 mb-4">Edit Event</h1>
+
+{% if event_id %}
+<p class="text-muted">Editing event #{{ event_id }} — full form pending.</p>
+{% endif %}
+
+<form method="post" action="{{ url_for('events.edit_event', event_id=event_id or 0) }}">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title"
+               value="{{ event.title if event else '' }}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" name="location"
+               value="{{ event.location if event else '' }}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <input type="text" class="form-control" id="category" name="category"
+               value="{{ event.category if event else '' }}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" name="date"
+               value="{{ event.date.isoformat() if event and event.date else '' }}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="4" disabled>{{ event.description if event else '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" disabled>Update</button>
+    <a href="{{ url_for('events.index') }}" class="btn btn-outline-secondary">Back</a>
+</form>
+{% endblock %}

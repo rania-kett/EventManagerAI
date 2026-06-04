@@ -1,0 +1,39 @@
+{#
+  index.html — Event list page.
+
+  Will display all events in a Bootstrap table/cards with
+  Edit, Delete, and Generate Description actions (not wired yet).
+#}
+{% extends "base.html" %}
+
+{% block title %}Events — EventManagerAI{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 mb-0">Events</h1>
+    <a href="{{ url_for('events.add_event') }}" class="btn btn-primary">Add Event</a>
+</div>
+
+{% if events %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# TODO: loop events — edit, delete, generate description #}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        No events yet. <a href="{{ url_for('events.add_event') }}">Create your first event</a>.
+    </div>
+{% endif %}
+{% endblock %}
