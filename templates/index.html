@@ -1,0 +1,57 @@
+{#
+  index.html — Liste des événements (plateforme premium).
+#}
+{% extends "layouts/app.html" %}
+
+{% block title %}Mes événements — EventManager AI{% endblock %}
+
+{% block content %}
+<header class="app-page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+        <span class="section-label">Plateforme</span>
+        <h1>Mes événements</h1>
+        <p>Gérez vos événements avec la même exigence que votre image de marque.</p>
+    </div>
+    <a href="{{ url_for('events.add_event') }}" class="btn btn-premium-gold">
+        <i class="bi bi-plus-lg me-2"></i>Nouvel événement
+    </a>
+</header>
+
+{% if events %}
+<div class="event-grid">
+    {% for event in events %}
+    <article class="event-card">
+        <p class="event-card-date">
+            <i class="bi bi-calendar3 me-1"></i>
+            {{ event.date.strftime("%d/%m/%Y") if event.date else "Date à définir" }}
+        </p>
+        <h2>{{ event.title }}</h2>
+        <div class="event-card-meta">
+            {% if event.location %}
+            <span><i class="bi bi-geo-alt"></i>{{ event.location }}</span>
+            {% endif %}
+            {% if event.category %}
+            <span class="badge badge-category">{{ event.category }}</span>
+            {% endif %}
+        </div>
+        <p class="event-card-desc">
+            {{ event.description[:160] }}{% if event.description and event.description|length > 160 %}…{% endif %}
+        </p>
+        <div class="event-card-actions">
+            <a href="{{ url_for('events.edit_event', event_id=event.id) }}"
+               class="btn btn-app-muted btn-sm">
+                <i class="bi bi-pencil me-1"></i>Modifier
+            </a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<div class="app-empty">
+    <i class="bi bi-calendar-event"></i>
+    <h2>Aucun événement pour le moment</h2>
+    <p class="text-muted-premium mb-4">Créez votre premier événement et laissez l'IA enrichir vos descriptions.</p>
+    <a href="{{ url_for('events.add_event') }}" class="btn btn-premium-gold">Créer un événement</a>
+</div>
+{% endif %}
+{% endblock %}
