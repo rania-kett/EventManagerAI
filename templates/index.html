@@ -42,6 +42,14 @@
                class="btn btn-app-muted btn-sm">
                 <i class="bi bi-pencil me-1"></i>Modifier
             </a>
+            <form method="post"
+                  action="{{ url_for('events.delete_event', event_id=event.id) }}"
+                  class="delete-event-form d-inline"
+                  data-event-title="{{ event.title }}">
+                <button type="submit" class="btn btn-app-danger btn-sm">
+                    <i class="bi bi-trash me-1"></i>Supprimer
+                </button>
+            </form>
         </div>
     </article>
     {% endfor %}

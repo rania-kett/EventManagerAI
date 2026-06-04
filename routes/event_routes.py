@@ -78,8 +78,11 @@ def edit_event(event_id: int):
 
 @event_bp.route("/<int:event_id>/delete", methods=["POST"])
 def delete_event(event_id: int):
-    """Delete event — implementation pending."""
-    return "", 501  # Not Implemented
+    """Delete event from database."""
+    event = Event.query.get_or_404(event_id)
+    title = EventService.delete(event)
+    flash(f'Événement « {title} » supprimé avec succès.', "success")
+    return redirect(url_for("events.index"))
 
 
 @event_bp.route("/<int:event_id>/generate-description", methods=["POST"])
