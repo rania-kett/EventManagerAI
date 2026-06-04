@@ -45,7 +45,7 @@ intentionally deferred.
 - `config.Config.GEMINI_API_KEY` / `GEMINI_MODEL`
 - `services/ai_service.py` — single integration point
 - `.env.example` documents required variables
-- Add `google-generativeai` when implementing (commented in `requirements.txt`)
+- Uses `google-genai` (Google GenAI SDK)
 
 ## Database
 
@@ -58,5 +58,5 @@ intentionally deferred.
 1. Enable forms in `add_event.html` / `edit_event.html`
 2. Wire POST handlers in `event_routes.py` using `EventFactory` + `db.session`
 3. Flash messages and delete confirmation
-4. Implement `AIService` with `google-generativeai`
+4. `AIService` uses `google-genai` (`genai.Client`)
 5. Add route tests and service unit tests with mocked Gemini

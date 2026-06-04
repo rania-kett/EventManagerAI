@@ -80,4 +80,23 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=app.config.get("DEBUG", True))
+    # Windows + corporate App Control: the debug reloader often spawns a
+    # child process that is blocked or exits, leaving nothing on port 5000.
+    use_reloader = os.environ.get("FLASK_USE_RELOADER", "").lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if os.name == "nt" and os.environ.get("FLASK_USE_RELOADER", "").lower() not in (
+        "1",
+        "true",
+        "yes",
+    ):
+        use_reloader = False
+
+    app.run(
+        debug=app.config.get("DEBUG", True),
+        host=os.environ.get("FLASK_HOST", "127.0.0.1"),
+        port=int(os.environ.get("FLASK_PORT", "5000")),
+        use_reloader=use_reloader,
+    )

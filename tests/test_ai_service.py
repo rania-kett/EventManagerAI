@@ -24,11 +24,11 @@ def test_empty_title_raises():
 
 @patch("services.ai_service.genai")
 def test_generate_event_description_success(mock_genai):
-    mock_model = MagicMock()
-    mock_model.generate_content.return_value = MagicMock(
+    mock_client = MagicMock()
+    mock_genai.Client.return_value = mock_client
+    mock_client.models.generate_content.return_value = MagicMock(
         text="Une soirée exceptionnelle vous attend."
     )
-    mock_genai.GenerativeModel.return_value = mock_model
 
     ai = AIService(api_key="test-key", model="gemini-2.0-flash")
     result = ai.generate_event_description(
@@ -38,8 +38,10 @@ def test_generate_event_description_success(mock_genai):
     )
 
     assert "exceptionnelle" in result
-    mock_genai.configure.assert_called_once_with(api_key="test-key")
-    mock_genai.GenerativeModel.assert_called_once_with("gemini-2.0-flash")
+    mock_genai.Client.assert_called_once_with(api_key="test-key")
+    call_kwargs = mock_client.models.generate_content.call_args.kwargs
+    assert call_kwargs["model"] == "gemini-2.0-flash"
+    assert "Gala Premium" in call_kwargs["contents"]
 
 
 def test_ai_generate_route_requires_title(client):

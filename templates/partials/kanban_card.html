@@ -26,7 +26,7 @@
         <form method="post"
               action="{{ url_for('events.delete_event', event_id=event.id) }}"
               class="delete-event-form d-inline"
-              data-event-title="{{ event.title }}">
+              data-event-title="{{ event.title | e }}">
             <button type="submit" class="btn btn-app-danger btn-sm" title="Supprimer">
                 <i class="bi bi-trash"></i>
             </button>
