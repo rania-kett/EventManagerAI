@@ -35,3 +35,35 @@ class EventService:
         db.session.add(event)
         db.session.commit()
         return event, {}, form_data
+
+    @staticmethod
+    def event_to_form(event: Event) -> Dict[str, str]:
+        """Map ORM event → dict for pre-filling the edit form."""
+        return {
+            "title": event.title or "",
+            "date": event.date.isoformat() if event.date else "",
+            "location": event.location or "",
+            "category": event.category or "",
+            "description": event.description or "",
+        }
+
+    @staticmethod
+    def update_from_form(
+        event: Event,
+        data: Dict[str, Any],
+    ) -> Tuple[Optional[Event], Dict[str, str], Dict[str, str]]:
+        """
+        Validate form data, update an existing event, and persist.
+
+        Returns:
+            (event, errors, form_data)
+        """
+        form_data = EventValidator.normalize_form_data(data)
+        errors = EventValidator.validate_edit_event(data)
+
+        if errors:
+            return None, errors, form_data
+
+        EventFactory.apply_update(event, data)
+        db.session.commit()
+        return event, {}, form_data

@@ -34,18 +34,12 @@ class EventFactory:
     @staticmethod
     def apply_update(event: Event, data: Dict[str, Any]) -> Event:
         """Mutate an existing Event from edit form data."""
-        if "title" in data:
-            event.title = data.get("title", "").strip()
-        if "date" in data:
-            parsed = EventFactory._parse_date(data.get("date"))
-            if parsed is not None:
-                event.date = parsed
-        if "location" in data:
-            event.location = (data.get("location") or "").strip() or None
-        if "category" in data:
-            event.category = (data.get("category") or "").strip() or None
-        if "description" in data:
-            event.description = (data.get("description") or "").strip() or None
+        parsed_date = EventFactory._parse_date(data.get("date"))
+        event.title = data.get("title", "").strip()
+        event.date = parsed_date
+        event.location = (data.get("location") or "").strip() or None
+        event.category = (data.get("category") or "").strip() or None
+        event.description = (data.get("description") or "").strip() or None
         return event
 
     @staticmethod
