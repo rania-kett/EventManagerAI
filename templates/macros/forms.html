@@ -1,0 +1,36 @@
+{#
+  macros/forms.html — Reusable Bootstrap form field helpers.
+#}
+{% macro text_field(name, label, value='', errors={}, type='text', required=true, rows=none, premium=false) %}
+<div class="mb-3">
+    <label for="{{ name }}" class="form-label">{{ label }}{% if required %} <span class="text-danger">*</span>{% endif %}</label>
+    {% set input_class = 'form-control' ~ (' premium-input' if premium else '') ~ (' is-invalid' if errors.get(name) else '') %}
+    {% if rows %}
+    <textarea class="{{ input_class }}"
+              id="{{ name }}" name="{{ name }}" rows="{{ rows }}"
+              {% if required %}required{% endif %}>{{ value }}</textarea>
+    {% else %}
+    <input type="{{ type }}" class="{{ input_class }}"
+           id="{{ name }}" name="{{ name }}" value="{{ value }}"
+           {% if required %}required{% endif %}>
+    {% endif %}
+    {% if errors.get(name) %}
+    <div class="invalid-feedback d-block">{{ errors[name] }}</div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro status_field(name, label, value, options, errors={}, premium=false) %}
+<div class="mb-3">
+    <label for="{{ name }}" class="form-label">{{ label }} <span class="text-danger">*</span></label>
+    <select class="form-select{% if premium %} premium-input{% endif %}{% if errors.get(name) %} is-invalid{% endif %}"
+            id="{{ name }}" name="{{ name }}" required>
+        {% for opt in options %}
+        <option value="{{ opt.key }}" {% if value == opt.key %}selected{% endif %}>{{ opt.label }}</option>
+        {% endfor %}
+    </select>
+    {% if errors.get(name) %}
+    <div class="invalid-feedback d-block">{{ errors[name] }}</div>
+    {% endif %}
+</div>
+{% endmacro %}

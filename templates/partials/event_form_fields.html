@@ -1,0 +1,12 @@
+{#
+  event_form_fields.html — Shared fields for create/edit event forms.
+  Expects: form, errors, status_choices
+#}
+{% from "macros/forms.html" import text_field, status_field %}
+
+{{ text_field("title", "Titre", form.title, errors, premium=true) }}
+{{ status_field("status", "Statut", form.status, status_choices, errors, premium=true) }}
+{{ text_field("location", "Lieu", form.location, errors, premium=true) }}
+{{ text_field("category", "Catégorie", form.category, errors, premium=true) }}
+{{ text_field("date", "Date", form.date, errors, type="date", premium=true) }}
+{% include "partials/ai_description_block.html" %}
