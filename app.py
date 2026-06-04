@@ -17,7 +17,7 @@ from typing import Optional
 
 from flask import Flask, render_template
 
-from config import config_by_name
+from config import apply_env_to_app, config_by_name
 from models import db
 from models.db_schema import ensure_database_schema
 from models.event import Event  # noqa: F401 — register model with metadata
@@ -41,6 +41,7 @@ def create_app(config_name: Optional[str] = None) -> Flask:
 
     config_class = config_by_name.get(config_name, config_by_name["default"])
     app.config.from_object(config_class)
+    apply_env_to_app(app)
 
     # Ensure instance/ exists for SQLite file (config.SQLALCHEMY_DATABASE_URI)
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,29 @@
+{#
+  partials/ai_description_block.html — Description field + Gemini generate button.
+#}
+<div class="mb-3 ai-description-block">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+        <label for="description" class="form-label mb-0">
+            Description <span class="text-danger">*</span>
+        </label>
+        <button type="button"
+                class="btn btn-ai-generate btn-sm js-generate-description"
+                data-generate-url="{{ url_for('events.ai_generate_description') }}"
+                {% if not ai_configured %}disabled title="Configurez GEMINI_API_KEY dans .env"{% endif %}>
+            <i class="bi bi-stars me-1"></i>Générer la description
+        </button>
+    </div>
+    <textarea class="form-control premium-input{% if errors.get('description') %} is-invalid{% endif %}"
+              id="description" name="description" rows="5" required>{{ form.description }}</textarea>
+    {% if errors.get('description') %}
+    <div class="invalid-feedback d-block">{{ errors.description }}</div>
+    {% endif %}
+    <p class="ai-generate-hint text-muted-premium small mt-2 mb-0">
+        {% if ai_configured %}
+        Saisissez le titre, puis cliquez sur <strong>Générer la description</strong> pour remplir ce champ avec Gemini.
+        {% else %}
+        <i class="bi bi-exclamation-circle me-1"></i>Ajoutez <code>GEMINI_API_KEY</code> dans votre fichier <code>.env</code> pour activer l'IA.
+        {% endif %}
+    </p>
+    <div class="ai-generate-status small mt-2" id="aiGenerateStatus" aria-live="polite"></div>
+</div>

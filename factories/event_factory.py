@@ -23,12 +23,15 @@ class EventFactory:
 
         Expected keys: title, date, location, category, description
         """
+        from models.event_status import DEFAULT_STATUS
+
         return Event.create(
             title=data.get("title", ""),
             event_date=EventFactory._parse_date(data.get("date")),
             location=data.get("location"),
             category=data.get("category"),
             description=data.get("description"),
+            status=data.get("status") or DEFAULT_STATUS,
         )
 
     @staticmethod
@@ -40,6 +43,12 @@ class EventFactory:
         event.location = (data.get("location") or "").strip() or None
         event.category = (data.get("category") or "").strip() or None
         event.description = (data.get("description") or "").strip() or None
+        status = (data.get("status") or "").strip()
+        if status:
+            from models.event_status import is_valid_status
+
+            if is_valid_status(status):
+                event.status = status
         return event
 
     @staticmethod

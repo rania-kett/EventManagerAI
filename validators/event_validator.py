@@ -5,6 +5,7 @@ validators/event_validator.py — Validate event form submissions.
 from typing import Any, Dict, Tuple
 
 from factories.event_factory import EventFactory
+from models.event_status import DEFAULT_STATUS, is_valid_status
 
 # Champs obligatoires sur les formulaires création / édition
 EVENT_REQUIRED_FIELDS: Tuple[str, ...] = (
@@ -24,6 +25,7 @@ _FIELD_LABELS = {
     "location": "Lieu",
     "category": "Catégorie",
     "description": "Description",
+    "status": "Statut",
 }
 
 
@@ -50,6 +52,12 @@ class EventValidator:
             if EventFactory._parse_date(data.get("date")) is None:
                 errors["date"] = "Date invalide."
 
+        status = (data.get("status") or "").strip()
+        if not status:
+            errors["status"] = f"{_FIELD_LABELS['status']} obligatoire."
+        elif not is_valid_status(status):
+            errors["status"] = "Statut invalide."
+
         return errors
 
     @staticmethod
@@ -65,7 +73,9 @@ class EventValidator:
     @staticmethod
     def normalize_form_data(data: Dict[str, Any]) -> Dict[str, str]:
         """Strip values for re-rendering the form after validation errors."""
-        return {
+        normalized = {
             field: (data.get(field) or "").strip()
             for field in EVENT_REQUIRED_FIELDS
         }
+        normalized["status"] = (data.get("status") or "").strip() or DEFAULT_STATUS
+        return normalized

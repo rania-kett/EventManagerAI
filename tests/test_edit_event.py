@@ -49,6 +49,7 @@ def _updated_payload():
         "location": "Rabat",
         "category": "Conférence",
         "description": "Édition 2026 enrichie par l'IA.",
+        "status": "in_progress",
     }
 
 

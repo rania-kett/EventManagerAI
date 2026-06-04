@@ -34,7 +34,7 @@ def test_events_index(client):
     """Event list page renders."""
     response = client.get("/events/")
     assert response.status_code == 200
-    assert "Mes événements" in response.data.decode("utf-8")
+    assert "Tableau Kanban" in response.data.decode("utf-8")
 
 
 def test_db_tables_created(app):

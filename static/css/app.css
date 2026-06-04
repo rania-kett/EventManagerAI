@@ -270,3 +270,36 @@
     color: #5c2020;
     border-left: 3px solid #8b3a3a;
 }
+
+/* Gemini generate button */
+.btn-ai-generate {
+    background: linear-gradient(135deg, rgba(201, 166, 107, 0.2) 0%, rgba(201, 166, 107, 0.35) 100%);
+    border: 1px solid var(--gold);
+    color: var(--gold-dark);
+    border-radius: 0;
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transition: all var(--transition);
+}
+
+.btn-ai-generate:hover:not(:disabled) {
+    background: var(--gold);
+    color: var(--black);
+}
+
+.btn-ai-generate:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ai-generate-status.text-success {
+    color: #3d5c3d !important;
+}
+
+.ai-description-block .form-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}

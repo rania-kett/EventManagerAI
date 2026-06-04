@@ -1,65 +1,55 @@
 {#
-  index.html — Liste des événements (plateforme premium).
+  index.html — Tableau Kanban des événements.
 #}
 {% extends "layouts/app.html" %}
 
-{% block title %}Mes événements — EventManager AI{% endblock %}
+{% block title %}Tableau Kanban — EventManager AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kanban.css') }}">
+{% endblock %}
 
 {% block content %}
-<header class="app-page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+<header class="app-page-header kanban-header d-flex flex-wrap justify-content-between align-items-end gap-3">
     <div>
         <span class="section-label">Plateforme</span>
-        <h1>Mes événements</h1>
-        <p>Gérez vos événements avec la même exigence que votre image de marque.</p>
+        <h1>Tableau Kanban</h1>
+        <p>Glissez-déposez vos événements pour mettre à jour leur statut en temps réel.</p>
     </div>
     <a href="{{ url_for('events.add_event') }}" class="btn btn-premium-gold">
         <i class="bi bi-plus-lg me-2"></i>Nouvel événement
     </a>
 </header>
 
-{% if events %}
-<div class="event-grid">
-    {% for event in events %}
-    <article class="event-card">
-        <p class="event-card-date">
-            <i class="bi bi-calendar3 me-1"></i>
-            {{ event.date.strftime("%d/%m/%Y") if event.date else "Date à définir" }}
-        </p>
-        <h2>{{ event.title }}</h2>
-        <div class="event-card-meta">
-            {% if event.location %}
-            <span><i class="bi bi-geo-alt"></i>{{ event.location }}</span>
-            {% endif %}
-            {% if event.category %}
-            <span class="badge badge-category">{{ event.category }}</span>
-            {% endif %}
-        </div>
-        <p class="event-card-desc">
-            {{ event.description[:160] }}{% if event.description and event.description|length > 160 %}…{% endif %}
-        </p>
-        <div class="event-card-actions">
-            <a href="{{ url_for('events.edit_event', event_id=event.id) }}"
-               class="btn btn-app-muted btn-sm">
-                <i class="bi bi-pencil me-1"></i>Modifier
-            </a>
-            <form method="post"
-                  action="{{ url_for('events.delete_event', event_id=event.id) }}"
-                  class="delete-event-form d-inline"
-                  data-event-title="{{ event.title }}">
-                <button type="submit" class="btn btn-app-danger btn-sm">
-                    <i class="bi bi-trash me-1"></i>Supprimer
-                </button>
-            </form>
-        </div>
-    </article>
-    {% endfor %}
-</div>
-{% else %}
+{% set total_events = events_by_status.values() | map('length') | sum %}
+{% if total_events == 0 %}
 <div class="app-empty">
-    <i class="bi bi-calendar-event"></i>
-    <h2>Aucun événement pour le moment</h2>
-    <p class="text-muted-premium mb-4">Créez votre premier événement et laissez l'IA enrichir vos descriptions.</p>
+    <i class="bi bi-kanban"></i>
+    <h2>Votre tableau est vide</h2>
+    <p class="text-muted-premium mb-4">Créez un événement — il apparaîtra dans la colonne <strong>Draft</strong>.</p>
     <a href="{{ url_for('events.add_event') }}" class="btn btn-premium-gold">Créer un événement</a>
 </div>
+{% else %}
+<div class="kanban-board" id="kanbanBoard">
+    {% for col in status_columns %}
+    <section class="kanban-column" data-status="{{ col.key }}">
+        <header class="kanban-column-header status-{{ col.key }}">
+            <h2>{{ col.label }}</h2>
+            <span class="kanban-count">{{ events_by_status[col.key] | length }}</span>
+        </header>
+        <div class="kanban-column-body" data-drop-zone="{{ col.key }}">
+            {% for event in events_by_status[col.key] %}
+            {% include "partials/kanban_card.html" %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+</div>
+<div class="kanban-toast" id="kanbanToast" role="status" aria-live="polite"></div>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>window.KANBAN_STATUS_URL_TEMPLATE = "{{ url_for('events.update_status', event_id=0) }}";</script>
+<script src="{{ url_for('static', filename='js/kanban.js') }}"></script>
 {% endblock %}
