@@ -6,12 +6,12 @@ from typing import Dict, List, Tuple
 
 # (key, display label, CSS modifier)
 EVENT_STATUSES: List[Tuple[str, str, str]] = [
-    ("draft", "Draft", "status-draft"),
-    ("planned", "Planned", "status-planned"),
-    ("confirmed", "Confirmed", "status-confirmed"),
-    ("in_progress", "In Progress", "status-in-progress"),
-    ("completed", "Completed", "status-completed"),
-    ("cancelled", "Cancelled", "status-cancelled"),
+    ("draft", "Brouillon", "status-draft"),
+    ("planned", "Planifié", "status-planned"),
+    ("confirmed", "Confirmé", "status-confirmed"),
+    ("in_progress", "En cours", "status-in-progress"),
+    ("completed", "Terminé", "status-completed"),
+    ("cancelled", "Annulé", "status-cancelled"),
 ]
 
 STATUS_KEYS: Tuple[str, ...] = tuple(s[0] for s in EVENT_STATUSES)
