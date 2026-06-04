@@ -4,19 +4,53 @@ routes/event_routes.py — HTTP endpoints for Event CRUD and AI helpers.
 Blueprint prefix: /events (registered in app.py).
 """
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 from models.event import Event
+from models.event_status import DEFAULT_STATUS, EVENT_STATUSES
 from services.event_service import EventService
 
 event_bp = Blueprint("events", __name__, url_prefix="/events")
 
 
+def _status_choices():
+    return [{"key": key, "label": label} for key, label, _ in EVENT_STATUSES]
+
+
 @event_bp.route("/")
 def index():
-    """List all events, newest first."""
+    """Kanban board — events grouped by status."""
     events = Event.query.order_by(Event.date.desc(), Event.id.desc()).all()
-    return render_template("index.html", events=events)
+    status_columns = [
+        {"key": key, "label": label}
+        for key, label, _ in EVENT_STATUSES
+    ]
+    return render_template(
+        "index.html",
+        events_by_status=EventService.group_by_status(events),
+        status_columns=status_columns,
+    )
+
+
+@event_bp.route("/<int:event_id>/status", methods=["PATCH", "POST"])
+def update_status(event_id: int):
+    """Update event status (drag & drop on Kanban board)."""
+    event = Event.query.get_or_404(event_id)
+    payload = request.get_json(silent=True) or {}
+    status = (payload.get("status") or request.form.get("status") or "").strip()
+
+    ok, message = EventService.update_status(event, status)
+    if not ok:
+        return jsonify({"success": False, "message": message}), 400
+
+    return jsonify(
+        {
+            "success": True,
+            "id": event.id,
+            "status": event.status,
+            "status_label": message,
+        }
+    )
 
 
 @event_bp.route("/add", methods=["GET", "POST"])
@@ -29,6 +63,7 @@ def add_event():
         "location": "",
         "category": "",
         "description": "",
+        "status": DEFAULT_STATUS,
     }
 
     if request.method == "POST":
@@ -45,6 +80,7 @@ def add_event():
         "add_event.html",
         errors=errors,
         form=form_data,
+        status_choices=_status_choices(),
     )
 
 
@@ -73,6 +109,7 @@ def edit_event(event_id: int):
         event_id=event_id,
         errors=errors,
         form=form_data,
+        status_choices=_status_choices(),
     )
 
 

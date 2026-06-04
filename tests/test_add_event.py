@@ -33,6 +33,7 @@ def _valid_payload():
         "location": "Marseille",
         "category": "Festival",
         "description": "Outdoor music and food.",
+        "status": "planned",
     }
 
 

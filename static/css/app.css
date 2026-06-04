@@ -202,9 +202,16 @@
     padding: 0.85rem 1rem;
 }
 
-.app-form-panel .form-control:focus {
+.app-form-panel .form-control:focus,
+.app-form-panel .form-select:focus {
     border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(201, 166, 107, 0.2);
+}
+
+.app-form-panel .form-select {
+    border: 1px solid rgba(10, 10, 10, 0.12);
+    border-radius: 0;
+    padding: 0.85rem 1rem;
 }
 
 .app-form-panel .invalid-feedback {
