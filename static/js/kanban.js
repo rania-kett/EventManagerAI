@@ -4,6 +4,8 @@
 (function () {
     "use strict";
 
+    var TOAST_HIDE_MS = 2800;
+
     var board = document.getElementById("kanbanBoard");
     var toast = document.getElementById("kanbanToast");
     var urlTemplate = window.KANBAN_STATUS_URL_TEMPLATE;
@@ -27,7 +29,7 @@
         clearTimeout(showToast._timer);
         showToast._timer = setTimeout(function () {
             toast.classList.remove("is-visible");
-        }, 2800);
+        }, TOAST_HIDE_MS);
     }
 
     function updateColumnCounts() {

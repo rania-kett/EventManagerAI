@@ -2,7 +2,9 @@
 services/ai_service.py — Gemini AI integration for event descriptions.
 """
 
-from typing import Any, List, Mapping, Optional
+from typing import Any, Mapping, Optional
+
+from config import DEFAULT_GEMINI_MODEL
 
 try:
     from google import genai
@@ -23,7 +25,7 @@ class AIService:
 
     def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         self._api_key = (api_key or "").strip()
-        self._model = model or "gemini-2.5-flash"
+        self._model = model or DEFAULT_GEMINI_MODEL
 
     @classmethod
     def from_config(cls, config: Mapping[str, Any]) -> "AIService":
@@ -110,12 +112,12 @@ class AIService:
         if "429" in error_message or "quota" in error_message.lower():
             return AIServiceError(
                 "Quota Gemini dépassé pour ce modèle. "
-                "Changez GEMINI_MODEL=gemini-2.5-flash dans .env "
+                f"Changez GEMINI_MODEL={DEFAULT_GEMINI_MODEL} dans .env "
                 "et redémarrez l'application."
             )
         if "404" in error_message and "not found" in error_message.lower():
             return AIServiceError(
                 f"Modèle « {self._model} » introuvable. "
-                "Utilisez GEMINI_MODEL=gemini-2.5-flash dans .env."
+                f"Utilisez GEMINI_MODEL={DEFAULT_GEMINI_MODEL} dans .env."
             )
         return AIServiceError(f"Erreur Gemini : {error_message}")
