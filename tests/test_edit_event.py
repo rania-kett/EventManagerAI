@@ -62,6 +62,8 @@ def test_edit_event_get_prefilled(client, sample_event):
     assert "Casablanca" in html
     assert 'value="2026-03-10"' in html
     assert "Enregistrer les modifications" in html
+    assert 'name="status"' in html
+    assert "Draft" in html or "draft" in html
 
 
 def test_edit_event_post_success(client, app, sample_event):

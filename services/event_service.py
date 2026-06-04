@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional, Tuple
 from factories.event_factory import EventFactory
 from models import db
 from models.event import Event
-from models.event_status import DEFAULT_STATUS, STATUS_LABELS, is_valid_status
+from models.event_status import STATUS_LABELS, is_valid_status
 from validators.event_validator import EventValidator
 
 
@@ -46,12 +46,13 @@ class EventService:
             "location": event.location or "",
             "category": event.category or "",
             "description": event.description or "",
-            "status": event.status or DEFAULT_STATUS,
+            "status": event.status or "draft",
         }
 
     @staticmethod
     def group_by_status(events) -> dict:
-        from models.event_status import STATUS_KEYS
+        """Group event list into Kanban columns keyed by status."""
+        from models.event_status import DEFAULT_STATUS, STATUS_KEYS
 
         grouped = {key: [] for key in STATUS_KEYS}
         for event in events:
@@ -61,8 +62,15 @@ class EventService:
 
     @staticmethod
     def update_status(event: Event, status: str) -> Tuple[bool, str]:
+        """
+        Update Kanban status for an event.
+
+        Returns:
+            (success, message)
+        """
         if not is_valid_status(status):
-            return False, "Statut invalide."
+            return False, "Invalid status."
+
         event.status = status
         db.session.commit()
         return True, STATUS_LABELS[status]

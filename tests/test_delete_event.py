@@ -66,6 +66,7 @@ def test_delete_button_on_index(client, app, sample_event):
     html = response.data.decode("utf-8")
 
     assert response.status_code == 200
-    assert "Supprimer" in html
-    assert f'/events/{sample_event}/delete' in html
-    assert "delete-event-form" in html or "kanban-card" in html
+    assert "Supprimer" in html or "bi-trash" in html
+    assert f"/events/{sample_event}/delete" in html
+    assert "delete-event-form" in html
+    assert "kanban-card" in html

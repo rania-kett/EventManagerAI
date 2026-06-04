@@ -4,12 +4,11 @@ routes/event_routes.py — HTTP endpoints for Event CRUD and AI helpers.
 Blueprint prefix: /events (registered in app.py).
 """
 
-from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 from config import is_gemini_configured
 from models.event import Event
 from models.event_status import DEFAULT_STATUS, EVENT_STATUSES
-from services.ai_service import AIService, AIServiceError, AIServiceNotConfiguredError
 from services.event_service import EventService
 
 event_bp = Blueprint("events", __name__, url_prefix="/events")
@@ -23,7 +22,10 @@ def _status_choices():
 def index():
     """Kanban board — events grouped by status."""
     events = Event.query.order_by(Event.date.desc(), Event.id.desc()).all()
-    status_columns = [{"key": key, "label": label} for key, label, _ in EVENT_STATUSES]
+    status_columns = [
+        {"key": key, "label": label}
+        for key, label, _ in EVENT_STATUSES
+    ]
     return render_template(
         "index.html",
         events_by_status=EventService.group_by_status(events),
@@ -33,13 +35,15 @@ def index():
 
 @event_bp.route("/<int:event_id>/status", methods=["PATCH", "POST"])
 def update_status(event_id: int):
-    """Update event status (drag & drop on Kanban)."""
+    """Update event status (drag & drop on Kanban board)."""
     event = Event.query.get_or_404(event_id)
     payload = request.get_json(silent=True) or {}
     status = (payload.get("status") or request.form.get("status") or "").strip()
+
     ok, message = EventService.update_status(event, status)
     if not ok:
         return jsonify({"success": False, "message": message}), 400
+
     return jsonify(
         {
             "success": True,
@@ -77,7 +81,6 @@ def add_event():
         "add_event.html",
         errors=errors,
         form=form_data,
-        ai_configured=is_gemini_configured(current_app),
         status_choices=_status_choices(),
     )
 
@@ -107,7 +110,6 @@ def edit_event(event_id: int):
         event_id=event_id,
         errors=errors,
         form=form_data,
-        ai_configured=is_gemini_configured(current_app),
         status_choices=_status_choices(),
     )
 

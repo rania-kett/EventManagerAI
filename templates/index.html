@@ -37,7 +37,9 @@
             <h2>{{ col.label }}</h2>
             <span class="kanban-count">{{ events_by_status[col.key] | length }}</span>
         </header>
-        <div class="kanban-column-body" data-drop-zone="{{ col.key }}">
+        <div class="kanban-column-body"
+             data-drop-zone="{{ col.key }}"
+             aria-label="{{ col.label }}">
             {% for event in events_by_status[col.key] %}
             {% include "partials/kanban_card.html" %}
             {% endfor %}
@@ -50,6 +52,8 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>window.KANBAN_STATUS_URL_TEMPLATE = "{{ url_for('events.update_status', event_id=0) }}";</script>
+<script>
+    window.KANBAN_STATUS_URL_TEMPLATE = "{{ url_for('events.update_status', event_id=0) }}";
+</script>
 <script src="{{ url_for('static', filename='js/kanban.js') }}"></script>
 {% endblock %}

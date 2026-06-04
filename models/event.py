@@ -5,7 +5,7 @@ Maps the `events` table. Persistence only — validation and use cases
 live in factories/ and services/.
 """
 
-from datetime import date, datetime
+from datetime import date
 from typing import Any, Dict, Optional
 
 from models import db
@@ -61,6 +61,8 @@ class Event(db.Model):
         status: Optional[str] = None,
     ) -> "Event":
         """Build an unsaved instance (caller commits via db.session)."""
+        from models.event_status import DEFAULT_STATUS
+
         return cls(
             title=title.strip(),
             date=event_date,

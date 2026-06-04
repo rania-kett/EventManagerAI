@@ -1,9 +1,10 @@
 """
-models/event_status.py — Statuts Kanban pour les événements.
+models/event_status.py — Kanban status definitions for events.
 """
 
 from typing import Dict, List, Tuple
 
+# (key, display label, CSS modifier)
 EVENT_STATUSES: List[Tuple[str, str, str]] = [
     ("draft", "Draft", "status-draft"),
     ("planned", "Planned", "status-planned"),
@@ -14,7 +15,9 @@ EVENT_STATUSES: List[Tuple[str, str, str]] = [
 ]
 
 STATUS_KEYS: Tuple[str, ...] = tuple(s[0] for s in EVENT_STATUSES)
+
 STATUS_LABELS: Dict[str, str] = {key: label for key, label, _ in EVENT_STATUSES}
+
 DEFAULT_STATUS = "draft"
 
 

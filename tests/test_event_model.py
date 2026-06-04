@@ -24,7 +24,15 @@ def app():
 def test_event_columns(app):
     with app.app_context():
         columns = {c["name"] for c in db.inspect(db.engine).get_columns("events")}
-        assert "status" in {c["name"] for c in db.inspect(db.engine).get_columns("events")}
+        assert columns == {
+            "id",
+            "title",
+            "date",
+            "location",
+            "category",
+            "description",
+            "status",
+        }
 
 
 def test_event_create_and_persist(app):
@@ -45,6 +53,7 @@ def test_event_create_and_persist(app):
         assert loaded.location == "Paris"
         assert loaded.category == "Conference"
         assert loaded.description == "Annual gathering."
+        assert loaded.status == "draft"
 
 
 def test_event_to_dict(app):
