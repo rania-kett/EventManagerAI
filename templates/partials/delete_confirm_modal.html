@@ -1,0 +1,48 @@
+{#
+  partials/delete_confirm_modal.html — Bootstrap 5 delete confirmation modal.
+#}
+<div class="modal fade delete-confirm-modal"
+     id="deleteEventConfirmModal"
+     tabindex="-1"
+     aria-labelledby="deleteEventConfirmModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteEventConfirmModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2" aria-hidden="true"></i>
+                    Supprimer l'événement
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-confirm-modal-lead mb-2">
+                    Vous êtes sur le point de supprimer définitivement&nbsp;:
+                </p>
+                <p class="delete-confirm-modal-event-title mb-3"
+                   id="deleteEventConfirmTitle"
+                   data-delete-confirm-title></p>
+                <p class="delete-confirm-modal-warning mb-0">
+                    <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                    Cette action est irréversible.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Annuler
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        id="deleteEventConfirmBtn">
+                    <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

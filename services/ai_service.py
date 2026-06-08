@@ -2,10 +2,12 @@
 services/ai_service.py — Gemini AI integration for event descriptions.
 """
 
-from typing import Any, List, Mapping, Optional
+from typing import Any, Mapping, Optional
+
+from config import DEFAULT_GEMINI_MODEL
 
 try:
-    import google.generativeai as genai
+    from google import genai
 except ImportError:  # pragma: no cover
     genai = None  # type: ignore
 
@@ -23,7 +25,7 @@ class AIService:
 
     def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         self._api_key = (api_key or "").strip()
-        self._model = model or "gemini-2.5-flash"
+        self._model = model or DEFAULT_GEMINI_MODEL
 
     @classmethod
     def from_config(cls, config: Mapping[str, Any]) -> "AIService":
@@ -62,8 +64,7 @@ class AIService:
             )
         if genai is None:
             raise AIServiceError(
-                "google-generativeai is not installed. "
-                "Run: pip install google-generativeai"
+                "google-genai is not installed. Run: pip install google-genai"
             )
 
     @staticmethod
@@ -91,11 +92,13 @@ class AIService:
         return instructions + "\n".join(context_lines)
 
     def _request_description(self, prompt: str) -> str:
-        genai.configure(api_key=self._api_key)
-        model = genai.GenerativeModel(self._model)
+        client = genai.Client(api_key=self._api_key)
 
         try:
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(
+                model=self._model,
+                contents=prompt,
+            )
             text = (response.text or "").strip()
         except Exception as exc:
             raise self._map_provider_error(exc) from exc
@@ -109,12 +112,12 @@ class AIService:
         if "429" in error_message or "quota" in error_message.lower():
             return AIServiceError(
                 "Quota Gemini dépassé pour ce modèle. "
-                "Changez GEMINI_MODEL=gemini-2.5-flash dans .env "
+                f"Changez GEMINI_MODEL={DEFAULT_GEMINI_MODEL} dans .env "
                 "et redémarrez l'application."
             )
         if "404" in error_message and "not found" in error_message.lower():
             return AIServiceError(
                 f"Modèle « {self._model} » introuvable. "
-                "Utilisez GEMINI_MODEL=gemini-2.5-flash dans .env."
+                f"Utilisez GEMINI_MODEL={DEFAULT_GEMINI_MODEL} dans .env."
             )
         return AIServiceError(f"Erreur Gemini : {error_message}")
