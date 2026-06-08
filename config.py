@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent
 # Load .env from project root before Config reads environment variables
 load_dotenv(BASE_DIR / ".env")
 
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+
 
 class Config:
     """Base configuration shared by all environments."""
@@ -32,7 +34,7 @@ class Config:
 
     # Gemini AI — prepared for future integration (services/ai_service.py)
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    GEMINI_MODEL = os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
 
 
 class DevelopmentConfig(Config):
@@ -79,8 +81,8 @@ def apply_env_to_app(app) -> None:
     reload_env()
     app.config["GEMINI_API_KEY"] = os.environ.get("GEMINI_API_KEY", "").strip()
     app.config["GEMINI_MODEL"] = (
-        os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
-        or "gemini-2.5-flash"
+        os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL).strip()
+        or DEFAULT_GEMINI_MODEL
     )
     app.config["SECRET_KEY"] = os.environ.get(
         "SECRET_KEY", app.config.get("SECRET_KEY", "dev-change-me-in-production")

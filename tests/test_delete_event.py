@@ -34,3 +34,5 @@ def test_delete_button_on_index(client, app, sample_event):
     assert "Supprimer" in html
     assert f"/events/{sample_event}/delete" in html
     assert "delete-event-form" in html
+    assert "deleteEventConfirmModal" in html
+    assert "deleteEventConfirmBtn" in html

@@ -739,6 +739,8 @@ For setup and usage instructions, see the project [README.md](../README.md).
 
 ---
 
-<p align="center">
-  <em>EventManager AI — Architecture v1.0</em>
-</p>
+1. Enable forms in `add_event.html` / `edit_event.html`
+2. Wire POST handlers in `event_routes.py` using `EventFactory` + `db.session`
+3. Flash messages and delete confirmation
+4. `AIService` uses `google-genai` (`genai.Client`)
+5. Add route tests and service unit tests with mocked Gemini
