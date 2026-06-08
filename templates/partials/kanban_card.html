@@ -5,31 +5,47 @@
          draggable="true"
          data-event-id="{{ event.id }}"
          data-status="{{ event.status }}">
-    <div class="kanban-card-header">
-        <span class="kanban-status-badge status-{{ event.status }}">{{ event.status_label }}</span>
+    <div class="kanban-card-content">
+        <div class="kanban-card-header">
+            <span class="kanban-status-badge status-{{ event.status }}">{{ event.status_label }}</span>
+        </div>
+        <h3 class="kanban-card-title">{{ event.title }}</h3>
+        <p class="kanban-card-desc">
+            {% if event.description %}
+            {{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}
+            {% else %}
+            <span class="kanban-card-desc-empty">Aucune description</span>
+            {% endif %}
+        </p>
+        <ul class="kanban-card-meta">
+            <li><i class="bi bi-calendar3" aria-hidden="true"></i>{{ event.date.strftime("%d/%m/%Y") if event.date else "—" }}</li>
+            {% if event.location %}
+            <li><i class="bi bi-geo-alt" aria-hidden="true"></i>{{ event.location }}</li>
+            {% endif %}
+            {% if event.category %}
+            <li><i class="bi bi-tag" aria-hidden="true"></i>{{ event.category }}</li>
+            {% endif %}
+        </ul>
     </div>
-    <h3 class="kanban-card-title">{{ event.title }}</h3>
-    <ul class="kanban-card-meta">
-        <li><i class="bi bi-calendar3"></i>{{ event.date.strftime("%d/%m/%Y") if event.date else "—" }}</li>
-        {% if event.location %}
-        <li><i class="bi bi-geo-alt"></i>{{ event.location }}</li>
-        {% endif %}
-        {% if event.category %}
-        <li><i class="bi bi-tag"></i>{{ event.category }}</li>
-        {% endif %}
-    </ul>
-    <div class="kanban-card-actions">
-        <a href="{{ url_for('events.edit_event', event_id=event.id) }}"
-           class="btn btn-app-muted btn-sm">
-            <i class="bi bi-pencil"></i>
-        </a>
-        <form method="post"
-              action="{{ url_for('events.delete_event', event_id=event.id) }}"
-              class="delete-event-form d-inline"
-              data-event-title="{{ event.title | e }}">
-            <button type="submit" class="btn btn-app-danger btn-sm" title="Supprimer">
-                <i class="bi bi-trash"></i>
-            </button>
-        </form>
-    </div>
+    <footer class="kanban-card-actions">
+        <div class="btn-group btn-group-sm kanban-card-btn-group" role="group" aria-label="Actions événement">
+            <a href="{{ url_for('events.edit_event', event_id=event.id) }}"
+               class="btn btn-outline-secondary kanban-action-btn"
+               title="Modifier">
+                <i class="bi bi-pencil"></i>
+                <span class="kanban-action-label">Modifier</span>
+            </a>
+            <form method="post"
+                  action="{{ url_for('events.delete_event', event_id=event.id) }}"
+                  class="delete-event-form d-inline"
+                  data-event-title="{{ event.title }}">
+                <button type="submit"
+                        class="btn btn-outline-danger kanban-action-btn"
+                        title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                    <span class="kanban-action-label">Supprimer</span>
+                </button>
+            </form>
+        </div>
+    </footer>
 </article>
